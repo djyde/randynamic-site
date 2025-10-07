@@ -70,7 +70,8 @@ export const Route = createFileRoute('/_products/pandocx/')({
   loader: async () => {
     const releaseInfo = await getTauriReleaseInfo({
       data: {
-        versionLink: "https://github.com/djyde/PandocX/releases/latest/download/latest.json"
+        owner: "djyde",
+        repo: "PandocX"
       }
     })
     return {

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProductsRouteImport } from './routes/_products'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductsPandocxIndexRouteImport } from './routes/_products/pandocx/index'
+import { Route as ProductsCcmateIndexRouteImport } from './routes/_products/ccmate/index'
 
 const ProductsRoute = ProductsRouteImport.update({
   id: '/_products',
@@ -27,27 +28,40 @@ const ProductsPandocxIndexRoute = ProductsPandocxIndexRouteImport.update({
   path: '/pandocx/',
   getParentRoute: () => ProductsRoute,
 } as any)
+const ProductsCcmateIndexRoute = ProductsCcmateIndexRouteImport.update({
+  id: '/ccmate/',
+  path: '/ccmate/',
+  getParentRoute: () => ProductsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ccmate': typeof ProductsCcmateIndexRoute
   '/pandocx': typeof ProductsPandocxIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ccmate': typeof ProductsCcmateIndexRoute
   '/pandocx': typeof ProductsPandocxIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_products': typeof ProductsRouteWithChildren
+  '/_products/ccmate/': typeof ProductsCcmateIndexRoute
   '/_products/pandocx/': typeof ProductsPandocxIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/pandocx'
+  fullPaths: '/' | '/ccmate' | '/pandocx'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/pandocx'
-  id: '__root__' | '/' | '/_products' | '/_products/pandocx/'
+  to: '/' | '/ccmate' | '/pandocx'
+  id:
+    | '__root__'
+    | '/'
+    | '/_products'
+    | '/_products/ccmate/'
+    | '/_products/pandocx/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -78,14 +92,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsPandocxIndexRouteImport
       parentRoute: typeof ProductsRoute
     }
+    '/_products/ccmate/': {
+      id: '/_products/ccmate/'
+      path: '/ccmate'
+      fullPath: '/ccmate'
+      preLoaderRoute: typeof ProductsCcmateIndexRouteImport
+      parentRoute: typeof ProductsRoute
+    }
   }
 }
 
 interface ProductsRouteChildren {
+  ProductsCcmateIndexRoute: typeof ProductsCcmateIndexRoute
   ProductsPandocxIndexRoute: typeof ProductsPandocxIndexRoute
 }
 
 const ProductsRouteChildren: ProductsRouteChildren = {
+  ProductsCcmateIndexRoute: ProductsCcmateIndexRoute,
   ProductsPandocxIndexRoute: ProductsPandocxIndexRoute,
 }
 

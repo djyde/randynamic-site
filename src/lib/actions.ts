@@ -5,13 +5,15 @@ import {
 import { z } from "zod";
 
 export const getTauriReleaseInfo = createServerFn()
-  .inputValidator(z.object({ versionLink: z.string() }))
+  .inputValidator(z.object({ owner: z.string(), repo: z.string() }))
   .handler(async ({ data }) => {
     const octokit = new Octokit()
 
+    const versionLink = `https://github.com/${data.owner}/${data.repo}/releases/latest/download/latest.json`
+
     try {
       // Fetch the latest.json for platform URLs and version info
-      const versionsResponse = await fetch(data.versionLink)
+      const versionsResponse = await fetch(versionLink)
       const versionsJson = await versionsResponse.json() as {
         version: string
         notes: string,
@@ -28,8 +30,8 @@ export const getTauriReleaseInfo = createServerFn()
 
       // Get the latest release from GitHub API to fetch asset sizes
       const { data: release } = await octokit.rest.repos.getLatestRelease({
-        owner: 'djyde',
-        repo: 'PandocX'
+        owner: data.owner,
+        repo: data.repo
       })
 
       // Create a map of asset URLs to their sizes and names

@@ -53,6 +53,12 @@ const products = [
     icon: "/images/notepal-icon.png",
     url: "https://notepal.randynamic.org",
     description: "一键同步微信读书笔记"
+  },
+  {
+    title: "CC Mate",
+    icon: "/images/ccmate-icon.png",
+    url: "/ccmate",
+    description: "GUI for Claude Code",
   }
 ]
 

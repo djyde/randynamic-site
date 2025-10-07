@@ -1,6 +1,4 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanstackDevtools } from '@tanstack/react-devtools'
 
 import appCss from '../styles.css?url'
 
@@ -168,6 +166,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         "name": "Notepal",
         "description": "一键同步微信读书笔记",
         "url": "https://notepal.randynamic.org",
+        "applicationCategory": "ProductivityApplication"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "CC Mate",
+        "description": "GUI for Claude Code",
+        "url": "https://randynamic.org/ccmate",
         "applicationCategory": "ProductivityApplication"
       }
     ]
