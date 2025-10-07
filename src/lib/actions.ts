@@ -4,9 +4,67 @@ import {
 } from "octokit";
 import { z } from "zod";
 
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+
+class MemoryCache {
+  private cache = new Map<string, CacheEntry<any>>();
+  private readonly ttl: number;
+
+  constructor(ttlMs: number = 30 * 60 * 1000) { // 30 minutes default
+    this.ttl = ttlMs;
+  }
+
+  set<T>(key: string, data: T): void {
+    this.cache.set(key, {
+      data,
+      timestamp: Date.now()
+    });
+  }
+
+  get<T>(key: string): T | null {
+    const entry = this.cache.get(key);
+    if (!entry) return null;
+
+    const now = Date.now();
+    if (now - entry.timestamp > this.ttl) {
+      this.cache.delete(key);
+      return null;
+    }
+
+    return entry.data;
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+
+  // Optional: method to clean up expired entries
+  cleanup(): void {
+    const now = Date.now();
+    for (const [key, entry] of this.cache.entries()) {
+      if (now - entry.timestamp > this.ttl) {
+        this.cache.delete(key);
+      }
+    }
+  }
+}
+
+const releaseInfoCache = new MemoryCache(30 * 60 * 1000); // 30 minutes
+
 export const getTauriReleaseInfo = createServerFn()
   .inputValidator(z.object({ owner: z.string(), repo: z.string() }))
   .handler(async ({ data }) => {
+    const cacheKey = `${data.owner}/${data.repo}`;
+
+    // Try to get from cache first
+    const cachedData = releaseInfoCache.get(cacheKey);
+    if (cachedData) {
+      return cachedData;
+    }
+
     const octokit = new Octokit()
 
     const versionLink = `https://github.com/${data.owner}/${data.repo}/releases/latest/download/latest.json`
@@ -55,24 +113,34 @@ export const getTauriReleaseInfo = createServerFn()
         }
       })
 
-      return {
+      const result = {
         versions: {
           version: versionsJson.version,
           notes: versionsJson.notes,
           pub_date: versionsJson.pub_date,
           platforms: platformsWithSizes
         },
-      }
+      };
+
+      // Cache the result
+      releaseInfoCache.set(cacheKey, result);
+
+      return result;
     } catch (error) {
       console.error('Failed to fetch release data:', error)
       // Fallback to empty data if API fails
-      return {
+      const fallbackResult = {
         versions: {
           version: 'N/A',
           notes: '',
           pub_date: '',
           platforms: {}
         }
-      }
+      };
+
+      // Cache the fallback result with a shorter TTL (5 minutes)
+      releaseInfoCache.set(cacheKey, fallbackResult);
+
+      return fallbackResult;
     }
   })
