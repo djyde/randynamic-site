@@ -15,6 +15,7 @@ import screenshot3 from './images/screen-3.png'
 import screenshot2 from './images/screen-2.png'
 import screenshot4 from './images/screen-4.png'
 import screenshot5 from './images/screen-5.png'
+import screenshot6 from './images/screen-6.png'
 import iconPath from './icon.png'
 
 import './main.css'
@@ -262,6 +263,23 @@ function RouteComponent() {
           </section>
 
           <section className='flex flex-col md:flex-row px-8 md:px-0 max-w-[960px] mx-auto items-center gap-12' aria-label="Application screenshot">
+            <div className='space-y-4 flex-1'>
+              <h2 className='font-bold text-2xl'>Usage monitor</h2>
+              <p>
+                Check the token usage of your Claude Code.
+              </p>
+            </div>
+            <div className='flex-2'>
+              <img
+                src={screenshot6}
+                className='w-[720px] max-w-full border-2 rounded-xl'
+                alt="CC Mate application interface showing usage monitor"
+                loading="lazy"
+              />
+            </div>
+          </section>
+
+          <section className='flex flex-col md:flex-row-reverse px-8 md:px-0 max-w-[960px] mx-auto items-center gap-12' aria-label="Application screenshot">
             <div className='space-y-4 flex-1'>
               <h2 className='font-bold text-2xl'>MCP Management</h2>
               <p>
