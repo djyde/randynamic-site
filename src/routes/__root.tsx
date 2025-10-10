@@ -183,6 +183,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
         <script
+          defer
+          data-domain="randynamic.org"
+          src="https://psb.djyde.com/js/script.js"
+        />
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
